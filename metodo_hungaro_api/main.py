@@ -1,10 +1,19 @@
 from fastapi import FastAPI, Body
+from fastapi.middleware.cors import CORSMiddleware
 
 from pydantic import BaseModel, Field
 import numpy as np
 
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],   # Permitir cualquier origen
+    allow_credentials=True,
+    allow_methods=["*"],   # Permitir todos los métodos (GET, POST, etc.)
+    allow_headers=["*"],   # Permitir todas las cabeceras
+)
 
 class Matriz(BaseModel):
     matriz:list[int]
