@@ -19,3 +19,5 @@ COPY . /hungaro/
 
 ENV PYTHONPATH=/hungaro
 ENV PYTHONUNBUFFERED=1
+
+CMD ["uvicorn", "metodo_hungaro_api.main:app", "--reload", "--host", "0.0.0.0", "--port", "8000"]
