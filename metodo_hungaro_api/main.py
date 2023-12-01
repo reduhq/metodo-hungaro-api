@@ -4,6 +4,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 import numpy as np
 
+import copy
+
 
 app = FastAPI()
 
@@ -62,12 +64,15 @@ def hello_world(
     # Verificando si el ejercicio esta terminado
     terminado, mat = verificar(matriz_final)
     
+    resultado_final = resultado(matriz_final)
+    
     if terminado:
         return {
             "matriz": matriz_final.tolist(),
             "iteracion_1": iteracion_1,
             "iteracion_2": iteracion_2,
-            "matriz_tachada": mat.tolist()
+            "matriz_tachada": mat.tolist(),
+            "resultado_final": resultado_final
         }
     
     # Si no esta terminado tendra que hacer mas operaciones...
@@ -82,13 +87,23 @@ def hello_world(
 
     terminado2, mat2 = verificar(matriz_resultante)
     
+    #########################################33
+    # Encontrar los índices donde la segunda matriz tiene -1
+    indices_a_rellenar = np.where(matriz_resultante == -1)
+
+    # Rellenar esos espacios con los datos de la primera matriz
+    matriz_resultante[indices_a_rellenar] = matriz_final[indices_a_rellenar]
+    
+    resultado_final = resultado(matriz_resultante)
+    
     if terminado2:
         return{
             "matriz": matriz_final.tolist(),
             "iteracion_1": iteracion_1,
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
-            "matriz_resultante": matriz_resultante.tolist()
+            "matriz_resultante": matriz_resultante.tolist(),
+            "resultado_final": resultado_final
         }
     
     
@@ -96,10 +111,10 @@ def hello_world(
 
 
 def verificar(matriz):
-    mat = matriz
+    mat = copy.copy(matriz)
     
     # Obtener el número de filas
-    num_filas = matriz.shape[0]
+    num_filas = mat.shape[0]
     
     # Buscando en que filas o columnas hay 2 o mas ceros para tacharlas
     for i in range(num_filas):
@@ -111,12 +126,12 @@ def verificar(matriz):
             mat[i] = -1
         
         # Verificar la columna i después de completar la verificación de filas
-        columna_x = matriz[:, i]
+        columna_x = mat[:, i]
         num_zeros_en_columna_x = np.count_nonzero(columna_x == 0)
         
         # Si hay 2 o más ceros en la columna i, convertir toda la columna a -1
         if num_zeros_en_columna_x >= 2:
-            matriz[:, i] = -1
+            mat[:, i] = -1
     
     # Buscando en que filas o columnas hay excatamente 1 cero para tacharlas
     for i in range(num_filas):
@@ -128,26 +143,70 @@ def verificar(matriz):
             mat[i] = -1
         
         # Verificar la columna i después de completar la verificación de filas
-        columna_x = matriz[:, i]
+        columna_x = mat[:, i]
         num_zeros_en_columna_x = np.count_nonzero(columna_x == 0)
         
         # Si hay exactamente 1 cero en la columna i, convertir toda la columna a -1
         if num_zeros_en_columna_x == 1:
-            matriz[:, i] = -1
+            mat[:, i] = -1
     
     # Contando cuantas filas y columnas tachadas hay 
     
     # Encontrar las filas que solo contienen -1
-    filas_solo_minus1 = np.all(matriz == -1, axis=1)
+    filas_solo_minus1 = np.all(mat == -1, axis=1)
 
     # Encontrar las columnas que solo contienen -1
-    columnas_solo_minus1 = np.all(matriz == -1, axis=0)
+    columnas_solo_minus1 = np.all(mat == -1, axis=0)
 
     # Contar el número de filas y columnas que solo contienen -1
     num_filas_solo_minus1 = np.count_nonzero(filas_solo_minus1)
     num_columnas_solo_minus1 = np.count_nonzero(columnas_solo_minus1)
 
     return (num_filas_solo_minus1+num_columnas_solo_minus1) == num_filas, mat
+
+def resultado(matriz_final):
+    matriz = matriz_final
+    indices_cero = []
+
+    # Iterando en cada fila para encontrar las filas donde solo hay exactamente un 0
+    for i, fila in enumerate(matriz):
+        #
+        indices_cero_fila = np.where(fila == 0)[0]
+
+        if len(indices_cero_fila) == 1:
+            indice_cero = indices_cero_fila[0]
+            indices_cero.append([int(i), int(indice_cero)])
+
+    nuevos_indices = encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero)
+    
+    indices = indices_cero + nuevos_indices
+    return indices
+
+
+def encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero_anterior):
+    nuevas_filas_cero = []
+
+    for i, fila in enumerate(matriz):
+        indices_cero_fila = np.where(fila == 0)[0]
+        
+        if len(indices_cero_fila) == 1:
+            continue
+
+        # Verificar si alguna columna con 0 tiene exactamente un 0
+        for indice_cero in indices_cero_fila:
+            columna = matriz[:, indice_cero]
+            if np.count_nonzero(columna == 0) == 1:
+                nuevas_filas_cero.append([int(i), int(indice_cero)])
+                break
+        else:
+            # Si no se encontró ninguna columna con exactamente un 0,
+            # buscar en la lista anterior y agregar el primer índice que cumple las condiciones
+            for indice_cero in indices_cero_fila:
+                if indice_cero not in [idx[1] for idx in indices_cero_anterior]:
+                    nuevas_filas_cero.append([int(i), int(indice_cero)])
+                    break
+
+    return nuevas_filas_cero
 
 # {
 #   "matriz": [
@@ -157,3 +216,20 @@ def verificar(matriz):
 #   "columnas": 4
 # }
 
+
+# {
+#   "matriz": [
+#     10,10,5,13,0,4,6,0,9,1,10,0,3,8,5,0,8,10,5,0,12,14,0,4,0,13,16,12,12,13,10,4,0,2,5,9
+#   ],
+#   "fila": 6,
+#   "columnas": 6
+# }
+
+
+# {
+#   "matriz": [
+#     3,4,0,4,5,0,0,0,3
+#   ],
+#   "fila": 3,
+#   "columnas": 3
+# }
