@@ -58,17 +58,41 @@ def hello_world(
         iteracion_2.append(fila_iteracion)
         
     matriz_final = np.transpose(iteracion_2)
-    print(matriz_final)
     
     # Verificando si el ejercicio esta terminado
-    terminado = verificar(matriz_final)
-    print(terminado)
+    terminado, mat = verificar(matriz_final)
     
-    return {
-        "matriz": matriz_final.tolist(),
-        "iteracion_1": iteracion_1,
-        "iteracion_2": iteracion_2
-    }
+    if terminado:
+        return {
+            "matriz": matriz_final.tolist(),
+            "iteracion_1": iteracion_1,
+            "iteracion_2": iteracion_2,
+            "matriz_tachada": mat.tolist()
+        }
+    
+    # Si no esta terminado tendra que hacer mas operaciones...
+    nueva_matriz = mat
+    
+    # Encontrar el número menor positivo en la nueva matriz
+    numeros_positivos = nueva_matriz[nueva_matriz > 0]
+    numero_menor_positivo = np.min(numeros_positivos)
+
+    # Restar el número menor positivo solo a los valores positivos de la matriz reducida
+    matriz_resultante = np.where(nueva_matriz > 0, nueva_matriz - numero_menor_positivo, nueva_matriz)
+
+    terminado, mat = verificar(matriz_resultante)
+    
+    if terminado:
+        return{
+            "matriz": matriz_final.tolist(),
+            "iteracion_1": iteracion_1,
+            "iteracion_2": iteracion_2,
+            "matriz_tachada": mat.tolist(),
+            "matriz_resultante": matriz_resultante.tolist()
+        }
+    
+    
+    return "holi"
 
 
 def verificar(matriz):
@@ -123,7 +147,7 @@ def verificar(matriz):
     num_filas_solo_minus1 = np.count_nonzero(filas_solo_minus1)
     num_columnas_solo_minus1 = np.count_nonzero(columnas_solo_minus1)
 
-    return (num_filas_solo_minus1+num_columnas_solo_minus1) == num_filas
+    return (num_filas_solo_minus1+num_columnas_solo_minus1) == num_filas, mat
 
 # {
 #   "matriz": [
