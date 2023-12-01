@@ -80,9 +80,9 @@ def hello_world(
     # Restar el número menor positivo solo a los valores positivos de la matriz reducida
     matriz_resultante = np.where(nueva_matriz > 0, nueva_matriz - numero_menor_positivo, nueva_matriz)
 
-    terminado, mat = verificar(matriz_resultante)
+    terminado2, mat2 = verificar(matriz_resultante)
     
-    if terminado:
+    if terminado2:
         return{
             "matriz": matriz_final.tolist(),
             "iteracion_1": iteracion_1,
