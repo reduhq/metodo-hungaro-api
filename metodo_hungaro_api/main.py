@@ -58,12 +58,72 @@ def hello_world(
         iteracion_2.append(fila_iteracion)
         
     matriz_final = np.transpose(iteracion_2)
+    print(matriz_final)
+    
+    # Verificando si el ejercicio esta terminado
+    terminado = verificar(matriz_final)
+    print(terminado)
     
     return {
         "matriz": matriz_final.tolist(),
         "iteracion_1": iteracion_1,
         "iteracion_2": iteracion_2
     }
+
+
+def verificar(matriz):
+    mat = matriz
+    
+    # Obtener el número de filas
+    num_filas = matriz.shape[0]
+    
+    # Buscando en que filas o columnas hay 2 o mas ceros para tacharlas
+    for i in range(num_filas):
+        # Contar el número de elementos iguales a 0 en la fila
+        num_zeros = np.count_nonzero(mat[i] == 0)
+        
+        # Si hay 2 o más 0 en la fila, convertir toda la fila a -1
+        if num_zeros >= 2:
+            mat[i] = -1
+        
+        # Verificar la columna i después de completar la verificación de filas
+        columna_x = matriz[:, i]
+        num_zeros_en_columna_x = np.count_nonzero(columna_x == 0)
+        
+        # Si hay 2 o más ceros en la columna i, convertir toda la columna a -1
+        if num_zeros_en_columna_x >= 2:
+            matriz[:, i] = -1
+    
+    # Buscando en que filas o columnas hay excatamente 1 cero para tacharlas
+    for i in range(num_filas):
+        # Contar el número de elementos iguales a 0 en la fila i
+        num_zeros = np.count_nonzero(mat[i] == 0)
+        
+        # Si hay exactamente 1 cero en la fila, convertir toda la fila a -1
+        if num_zeros == 1:
+            mat[i] = -1
+        
+        # Verificar la columna i después de completar la verificación de filas
+        columna_x = matriz[:, i]
+        num_zeros_en_columna_x = np.count_nonzero(columna_x == 0)
+        
+        # Si hay exactamente 1 cero en la columna i, convertir toda la columna a -1
+        if num_zeros_en_columna_x == 1:
+            matriz[:, i] = -1
+    
+    # Contando cuantas filas y columnas tachadas hay 
+    
+    # Encontrar las filas que solo contienen -1
+    filas_solo_minus1 = np.all(matriz == -1, axis=1)
+
+    # Encontrar las columnas que solo contienen -1
+    columnas_solo_minus1 = np.all(matriz == -1, axis=0)
+
+    # Contar el número de filas y columnas que solo contienen -1
+    num_filas_solo_minus1 = np.count_nonzero(filas_solo_minus1)
+    num_columnas_solo_minus1 = np.count_nonzero(columnas_solo_minus1)
+
+    return (num_filas_solo_minus1+num_columnas_solo_minus1) == num_filas
 
 # {
 #   "matriz": [
