@@ -77,6 +77,8 @@ def hello_world(
     
     # Si no esta terminado tendra que hacer mas operaciones...
     nueva_matriz = mat
+    print(matriz_final)
+    print(nueva_matriz)
     
     # Encontrar el número menor positivo en la nueva matriz
     numeros_positivos = nueva_matriz[nueva_matriz > 0]
@@ -149,6 +151,13 @@ def verificar(matriz):
         # Si hay exactamente 1 cero en la columna i, convertir toda la columna a -1
         if num_zeros_en_columna_x == 1:
             mat[:, i] = -1
+            
+    # si toda la matriz es igual a -1, retornar true y la matriz resultante
+    
+    # Verifica si todos los elementos son iguales a -1
+    son_todos_iguales = np.all(mat == -1)
+    if son_todos_iguales:
+        return True, mat
     
     # Contando cuantas filas y columnas tachadas hay 
     
