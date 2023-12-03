@@ -61,10 +61,12 @@ def hello_world(
         
     matriz_final = np.transpose(iteracion_2)
     
-    # Verificando si el ejercicio esta terminado
+    # Verificando si el ejercicio esta terminado 
     terminado, mat = verificar(matriz_final)
     
     resultado_final = resultado(matriz_final)
+    
+    costo_final = costo(matriz.tolist(), resultado_final)
     
     if terminado:
         return {
@@ -72,13 +74,12 @@ def hello_world(
             "iteracion_1": iteracion_1,
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
-            "resultado_final": resultado_final
+            "resultado_final": resultado_final,
+            "costo": costo_final
         }
     
     # Si no esta terminado tendra que hacer mas operaciones...
     nueva_matriz = mat
-    print(matriz_final)
-    print(nueva_matriz)
     
     # Encontrar el número menor positivo en la nueva matriz
     numeros_positivos = nueva_matriz[nueva_matriz > 0]
@@ -98,6 +99,8 @@ def hello_world(
     
     resultado_final = resultado(matriz_resultante)
     
+    costo_final = costo(matriz.tolist(), resultado_final)
+    
     if terminado2:
         return{
             "matriz": matriz.tolist(),
@@ -105,11 +108,12 @@ def hello_world(
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
             "matriz_resultante": matriz_resultante.tolist(),
-            "resultado_final": resultado_final
+            "resultado_final": resultado_final,
+            "costo": costo_final
         }
     
     
-    return "holi"
+    return "QUE LINDA ES <3"
 
 
 def verificar(matriz):
@@ -217,6 +221,14 @@ def encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero_anterior):
 
     return nuevas_filas_cero
 
+def costo(matriz, coordenadas):
+    sumatoria = 0
+    for i, fila in enumerate(matriz):
+        sumatoria = sumatoria + fila[coordenadas[i][1]]
+    return sumatoria
+
+
+
 # {
 #   "matriz": [
 #     180,150,200,200,250,305,450,500,200,208,320,100
@@ -232,6 +244,14 @@ def encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero_anterior):
 #   ],
 #   "fila": 6,
 #   "columnas": 6
+# }
+
+# {
+#   "matriz": [
+#     10,9,5,9,8,3,6,4,7
+#   ],
+#   "fila": 3,
+#   "columnas": 3
 # }
 
 
