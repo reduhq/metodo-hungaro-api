@@ -68,7 +68,7 @@ def hello_world(
     
     if terminado:
         return {
-            "matriz": matriz_user.matriz,
+            "matriz": matriz.tolist(),
             "iteracion_1": iteracion_1,
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
@@ -100,7 +100,7 @@ def hello_world(
     
     if terminado2:
         return{
-            "matriz": matriz_user.matriz,
+            "matriz": matriz.tolist(),
             "iteracion_1": iteracion_1,
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
