@@ -190,14 +190,13 @@ def resultado(matriz_final):
             indice_cero = indices_cero_fila[0]
             indices_cero.append([int(i), int(indice_cero)])
 
-    nuevos_indices = encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero)
+    encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero)
     
-    indices = indices_cero + nuevos_indices
-    return indices
+    return indices_cero
 
 
 def encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero_anterior):
-    nuevas_filas_cero = []
+    nuevas_filas_cero = indices_cero_anterior
 
     for i, fila in enumerate(matriz):
         indices_cero_fila = np.where(fila == 0)[0]
