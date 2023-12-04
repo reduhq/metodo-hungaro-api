@@ -64,9 +64,9 @@ def hello_world(
     # Verificando si el ejercicio esta terminado 
     terminado, mat = verificar(matriz_final)
     
-    resultado_final = resultado(matriz_final)
+    resultado_final = resultado(matriz_final, matriz)
     
-    costo_final = costo(matriz.tolist(), resultado_final)
+    costo_final = costo(resultado_final)
     
     if terminado:
         return {
@@ -74,8 +74,8 @@ def hello_world(
             "iteracion_1": iteracion_1,
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
-            "resultado_final": resultado_final,
-            "costo": costo_final
+            "resultado_final": resultado_final.tolist(),
+            "costo": convertir_a_tipo_nativo(costo_final)
         }
     
     # Si no esta terminado tendra que hacer mas operaciones...
@@ -97,10 +97,10 @@ def hello_world(
     # Rellenar esos espacios con los datos de la primera matriz
     matriz_resultante[indices_a_rellenar] = matriz_final[indices_a_rellenar]
     
-    resultado_final = resultado(matriz_resultante)
+    resultado_final = resultado(matriz_resultante, matriz)
     
-    costo_final = costo(matriz.tolist(), resultado_final)
-    
+    costo_final = costo(resultado_final)
+
     if terminado2:
         return{
             "matriz": matriz.tolist(),
@@ -108,12 +108,12 @@ def hello_world(
             "iteracion_2": iteracion_2,
             "matriz_tachada": mat.tolist(),
             "matriz_resultante": matriz_resultante.tolist(),
-            "resultado_final": resultado_final,
-            "costo": costo_final
+            "resultado_final": resultado_final.tolist(),
+            "costo": convertir_a_tipo_nativo(costo_final)
         }
     
     
-    return "QUE LINDA ES <3"
+    return "QUE LINDA ES PATI <3"
 
 
 def verificar(matriz):
@@ -177,7 +177,25 @@ def verificar(matriz):
 
     return (num_filas_solo_minus1+num_columnas_solo_minus1) == num_filas, mat
 
-def resultado(matriz_final):
+
+def pintar_matriz(matriz, coordenadas):
+    # Copia de la matriz original
+    matrizR = np.zeros_like(matriz)
+
+    # Obtener filas y columnas
+    filas, columnas = matrizR.shape
+
+    # Iterar sobre las coordenadas y asignar el valor original en esas posiciones
+    for coord in coordenadas:
+        i, j = coord
+        if 0 <= i < filas and 0 <= j < columnas:
+            matrizR[i, j] = matriz[i, j]
+
+    return matrizR
+
+
+def resultado(matriz_final, matrizI):
+    matrizInicial = matrizI
     matriz = matriz_final
     indices_cero = []
 
@@ -191,8 +209,10 @@ def resultado(matriz_final):
             indices_cero.append([int(i), int(indice_cero)])
 
     encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero)
+
+    resultado = pintar_matriz(matrizInicial, indices_cero)
     
-    return indices_cero
+    return resultado
 
 
 def encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero_anterior):
@@ -220,11 +240,20 @@ def encontrar_filas_con_dos_o_mas_ceros(matriz, indices_cero_anterior):
 
     return nuevas_filas_cero
 
-def costo(matriz, coordenadas):
-    sumatoria = 0
-    for i, fila in enumerate(matriz):
-        sumatoria = sumatoria + fila[coordenadas[i][1]]
-    return sumatoria
+
+def costo(matriz):
+    suma_total = np.sum(matriz)
+    return suma_total
+
+
+def convertir_a_tipo_nativo(valor):
+    # Convertir valores de tipo numpy.int64 a tipos nativos de Python
+    if isinstance(valor, np.int64):
+        return valor.item()
+    return valor 
+
+
+
 
 
 
