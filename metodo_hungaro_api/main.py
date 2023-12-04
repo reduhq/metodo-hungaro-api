@@ -72,7 +72,7 @@ def hello_world(
         return {
             "matriz": matriz.tolist(),
             "iteracion_1": iteracion_1,
-            "iteracion_2": iteracion_2,
+            "iteracion_2": matriz_final.tolist(),
             "matriz_tachada": mat.tolist(),
             "resultado_final": resultado_final.tolist(),
             "costo": convertir_a_tipo_nativo(costo_final)
@@ -105,7 +105,7 @@ def hello_world(
         return{
             "matriz": matriz.tolist(),
             "iteracion_1": iteracion_1,
-            "iteracion_2": iteracion_2,
+            "iteracion_2": matriz_final.tolist(),
             "matriz_tachada": mat.tolist(),
             "matriz_resultante": matriz_resultante.tolist(),
             "resultado_final": resultado_final.tolist(),
